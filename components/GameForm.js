@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { createGame, getGameTypes } from '../utils/data/gameData';
+import { createGame, getGameTypes, updateGame } from '../utils/data/gameData';
 
 const initialState = {
   skillLevel: 1,
@@ -12,7 +12,7 @@ const initialState = {
   gameType: 1,
 };
 
-const GameForm = ({ user }) => {
+const GameForm = ({ user, game }) => {
   const [gameTypes, setGameTypes] = useState([]);
   /*
   Since the input fields are bound to the values of
@@ -39,8 +39,9 @@ const GameForm = ({ user }) => {
   const handleSubmit = (e) => {
     // Prevent form from being submitted
     e.preventDefault();
-    {
-      const game = {
+    if (game.id) {
+      const gameItem = {
+        id: game.id,
         maker: currentGame.maker,
         title: currentGame.title,
         numberOfPlayers: Number(currentGame.numberOfPlayers),
@@ -48,15 +49,24 @@ const GameForm = ({ user }) => {
         gameType: Number(currentGame.gameType),
         userId: user.uid,
       };
-
-      // Send POST request to your API
-      createGame(game).then(() => router.push('/games'));
+      updateGame(gameItem).then(() => router.push('/'));
+    } else {
+      const gameItem = {
+        maker: currentGame.maker,
+        title: currentGame.title,
+        numberOfPlayers: Number(currentGame.numberOfPlayers),
+        skillLevel: Number(currentGame.skillLevel),
+        gameType: Number(currentGame.gameType),
+        userId: user.uid,
+      };
+      createGame(gameItem).then(() => router.push('/games'));
     }
   };
 
   return (
     <>
       <Form onSubmit={handleSubmit}>
+        <h2> {game.id ? 'Update' : 'Create'}Game</h2>
         <Form.Group className="mb-3">
           <Form.Label>Title</Form.Label>
           <Form.Control name="title" required value={currentGame.title} onChange={handleChange} />
@@ -86,8 +96,8 @@ const GameForm = ({ user }) => {
            ))
             }
         </Form.Select>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button variant="warning" type="submit">{game.id ? 'Update' : 'Create'}
+          Game
         </Button>
       </Form>
     </>
