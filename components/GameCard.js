@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
+// import { deleteGame } from '../utils/data/gameData';
 
 const GameCard = ({
   title, //
@@ -14,6 +15,7 @@ const GameCard = ({
       <Card.Title>By: {maker}</Card.Title>
       <Card.Text>{numberOfPlayers} players needed</Card.Text>
     </Card.Body>
+    <Button>Delete Game</Button>
     <Card.Footer className="text-muted">Skill Level: {skillLevel}</Card.Footer>
   </Card>
 );
